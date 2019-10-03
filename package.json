@@ -1,0 +1,26 @@
+{
+  "name": "create-web-ext",
+  "version": "0.1.0",
+  "description": "command line tool to create cross-browser Web Extensions",
+  "main": "index.js",
+  "bin": {
+    "create-web-ext": "bin/create-web-ext"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "create-web-ext",
+    "webextension",
+    "addon",
+    "firefox",
+    "chrome"
+  ],
+  "author": "César Carruitero",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "inquirer": "^7.0.0",
+    "lodash": "^4.17.15"
+  }
+}

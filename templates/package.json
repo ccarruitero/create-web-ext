@@ -1,0 +1,12 @@
+{
+    "name": "<%= appname %>",
+    "version": "0.1.0",
+    "dependencies": {},
+    "devDependencies": {
+        "web-ext": "^3.2.0"
+    },
+    "scripts": {
+      "build": "web-ext build -s extension/",
+      "start": "web-ext run -s extension/"
+    }
+}
