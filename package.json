@@ -22,5 +22,16 @@
     "chalk": "^2.4.2",
     "inquirer": "^7.0.0",
     "lodash": "^4.17.15"
+  },
+  "devDependencies": {
+    "jest": "^24.9.0",
+    "tmp": "^0.1.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": [
+      "<rootDir>/__tests__/**/*.test.js",
+      "<rootDir>/__tests__/*.test.js"
+    ]
   }
 }
