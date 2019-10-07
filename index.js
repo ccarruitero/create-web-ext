@@ -54,7 +54,7 @@ const copyTpl = async (file, projectPath, opts) => {
   return fsp.writeFile(path.resolve(projectPath, file), tmpl)
 }
 
-const main = () => {
+const cli = () => {
   return inquirer.prompt(QUESTIONS).then(({
     name,
     description,
@@ -71,4 +71,4 @@ const main = () => {
   });
 };
 
-module.exports = main;
+module.exports = cli;

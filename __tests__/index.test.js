@@ -1,43 +1,38 @@
 const path = require('path');
 const fs = require('fs');
 const inquirer = require('inquirer');
-const withTmpDir = require('./helpers/tmp-dir');
-const runner = require('./helpers/cmd-runner');
-const execDirPath = path.join(__dirname, '..', 'bin');
+const cli = require('../index');
 
 jest.mock('inquirer');
 
-const assertFiles = (files, target) => {
-  files.forEach(async (file) => {
-    const stat = await fs.stat(path.resolve(target, file));
-    expect(stat.isFile()).toBeTruthy();
+const assertFiles = async (files, dirName) => {
+  return files.forEach((file) => {
+    const filePath = path.resolve(dirName, file);
+    const fileExists = fs.existsSync(filePath);
+    expect(fileExists).toBeTruthy();
   });
 };
 
 describe('main', () => {
   beforeEach(() => {
-    inquirer.prompt.mockClear();
-    const promptAnswers = {
+    this.promptAnswers = {
       name: 'myExtension',
       description: 'some description',
       popup: true,
       contentScript: false,
     };
-    inquirer.prompt.mockResolvedValue(promptAnswers);
+    inquirer.prompt.mockResolvedValue(this.promptAnswers);
   });
 
-  it('creates files', () => withTmpDir(
-    async (tmpPath) => {
-      const target = path.join(tmpPath, 'target');
-      const cmd = runner([`${execDirPath}/create-web-ext`, `${target}`]);
+  it('creates files', async () => {
+    await cli();
 
-      assertFiles([
-        'package.json',
-        'extension/manifest.json',
-        'extension/_locales/en/messages.json'
-      ], target);
-    }
-  ));
+    await assertFiles([
+      'package.json',
+      'extension/manifest.json',
+      'extension/_locales/en/messages.json'
+    ], this.promptAnswers.name);
+  });
 
   // it('set name in locales', done => {
   //   run({
