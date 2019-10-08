@@ -55,7 +55,7 @@ const copyTpl = async (file, projectPath, opts) => {
 }
 
 const cli = () => {
-  return inquirer.prompt(QUESTIONS).then(({
+  return inquirer.prompt(QUESTIONS).then(async ({
     name,
     description,
     popup,
@@ -65,9 +65,20 @@ const cli = () => {
     permissions
   }) => {
     const projectPath = path.resolve(process.cwd(), name);
-    fsp.mkdir(projectPath).then(async () => {
-      await copyTpl('package.json', projectPath, { appname: name })
-    })
+    await fsp.mkdir(projectPath);
+    await copyTpl('package.json', projectPath, { name })
+
+    const extPath = path.resolve(projectPath, 'extension');
+    await fsp.mkdir(extPath);
+    await copyTpl('manifest.json', extPath);
+
+    const localesPath = path.resolve(extPath, '_locales/en');
+    await fsp.mkdir(localesPath, { recursive: true });
+    await copyTpl(
+      '_locales/en/messages.json',
+      extPath,
+      { name, description }
+    );
   });
 };
 
