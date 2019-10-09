@@ -16,6 +16,7 @@ describe('main', () => {
       contentScript: false,
     };
     inquirer.prompt.mockResolvedValue(this.promptAnswers);
+    this.extPath = `${this.promptAnswers.name}/extension`;
 
     this.basicFiles = [
       'package.json',
@@ -57,18 +58,18 @@ describe('main', () => {
     Object.assign(this.promptAnswers, args);
 
     await cli()
-    assert.noFile(`${this.promptAnswers.name}/extension/popup/index.html`);
-    assert.noFileContent(`${this.promptAnswers.name}/extension/manifest.json`, 'default_popup');
+    assert.noFile(`${this.extPath}/popup/index.html`);
+    assert.noFileContent(`${this.extPath}/manifest.json`, 'default_popup');
   });
 
   it('can set background', async () => {
     const args = { background: true };
     Object.assign(this.promptAnswers, args);
 
-    await cli().then(() => {
-      assert.file(`${this.promptAnswers.name}/extension/background/index.js`);
-      assert.fileContent(`${this.promptAnswers.name}/extension/manifest.json`, 'background');
-    });
+    await cli();
+
+    assert.file(`${this.extPath}/background/index.js`);
+    assert.fileContent(`${this.extPath}/manifest.json`, 'background');
   });
 
   // it('can set permissions in manifest', done => {
@@ -84,16 +85,15 @@ describe('main', () => {
   //   });
   // });
 
-  // it('can set content script', done => {
-  //   run({
-  //     contentScript: true
-  //   }, () => {
-  //     assert.fileContent('extension/manifest.json', 'content_scripts');
-  //     assert.fileContent('extension/manifest.json', '<all_urls>');
-  //     assert.file('extension/content_scripts/index.js');
-  //     done();
-  //   });
-  // });
+  it('can set content script', async () => {
+    const args = { contentScript: true };
+    Object.assign(this.promptAnswers, args);
+
+    await cli();
+    assert.fileContent(`${this.extPath}/manifest.json`, 'content_scripts');
+    assert.fileContent(`${this.extPath}/manifest.json`, '<all_urls>');
+    assert.file(`${this.extPath}/content_scripts/index.js`);
+  });
 
   // it('can set match pattern for content script', done => {
   //   run({

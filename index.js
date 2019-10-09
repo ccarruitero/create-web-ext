@@ -75,6 +75,7 @@ const cli = () => {
     description,
     popup,
     contentScript,
+    contentScriptMatch,
     input,
     background,
     permissions
@@ -109,6 +110,17 @@ const cli = () => {
         background: {
           scripts: 'background/index.js'
         }
+      });
+    }
+    if (contentScript) {
+      const match = contentScriptMatch || '<all_urls>';
+      await add(extPath, 'content_scripts', 'index.js', {
+        content_scripts: [
+          {
+            matches: [match],
+            js: 'content_scripts/index.js'
+          }
+        ]
       });
     }
   });
