@@ -45,22 +45,21 @@ describe('main', () => {
 
   it('set name in locales', async () => {
     const args = { name: 'noPopup' };
-    this.promptAnswers =  Object.assign(this.promptAnswers, args);
+    Object.assign(this.promptAnswers, args);
 
     await cli()
     const msgPath = path.resolve(this.promptAnswers.name, 'extension/_locales/en/messages.json');
     assert.fileContent(msgPath, 'noPopup');
   });
 
-  // it('allow no popup', done => {
-  //   run({
-  //     popup: false
-  //   }, () => {
-  //     assert.noFile('extension/popup/index.html');
-  //     assert.noFileContent('extension/manifest.json', 'default_popup');
-  //     done();
-  //   });
-  // });
+  it('allow no popup', async () => {
+    const args = { popup: false };
+    Object.assign(this.promptAnswers, args);
+
+    await cli()
+    assert.noFile(`${this.promptAnswers.name}/extension/popup/index.html`);
+    assert.noFileContent(`${this.promptAnswers.name}/extension/manifest.json`, 'default_popup');
+  });
 
   // it('can set background', done => {
   //   run({

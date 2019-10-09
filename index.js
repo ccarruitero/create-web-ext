@@ -54,6 +54,15 @@ const copyTpl = async (file, projectPath, opts) => {
   return fsp.writeFile(path.resolve(projectPath, file), tmpl)
 }
 
+const extendJSON = (filepath, content) => {
+  return fsp.readFile(filepath, "utf-8").then((data) => {
+    const originalContent = JSON.parse(data);
+    const newContent = Object.assign({}, originalContent, content);
+    const jsonStr = JSON.stringify(newContent, null, 2) + "\n";
+    fsp.writeFile(filepath, jsonStr);
+  });
+}
+
 const cli = () => {
   return inquirer.prompt(QUESTIONS).then(async ({
     name,
@@ -80,6 +89,17 @@ const cli = () => {
       extPath,
       { name, description }
     );
+
+    if (popup) {
+      await fsp.mkdir(path.resolve(extPath, 'popup'));
+      await fsp.writeFile(path.resolve(extPath, 'popup/index.html'), '');
+      extendJSON(path.resolve(extPath, 'manifest.json'), {
+        browser_action: {
+          browser_style: true,
+          default_popup: 'popup/index.html'
+        }
+      });
+    }
   });
 };
 
