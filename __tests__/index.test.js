@@ -61,15 +61,15 @@ describe('main', () => {
     assert.noFileContent(`${this.promptAnswers.name}/extension/manifest.json`, 'default_popup');
   });
 
-  // it('can set background', done => {
-  //   run({
-  //     background: true
-  //   }, () => {
-  //     assert.file('extension/background/index.js');
-  //     assert.fileContent('extension/manifest.json', 'background');
-  //     done();
-  //   });
-  // });
+  it('can set background', async () => {
+    const args = { background: true };
+    Object.assign(this.promptAnswers, args);
+
+    await cli().then(() => {
+      assert.file(`${this.promptAnswers.name}/extension/background/index.js`);
+      assert.fileContent(`${this.promptAnswers.name}/extension/manifest.json`, 'background');
+    });
+  });
 
   // it('can set permissions in manifest', done => {
   //   run({

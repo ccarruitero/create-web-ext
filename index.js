@@ -54,14 +54,20 @@ const copyTpl = async (file, projectPath, opts) => {
   return fsp.writeFile(path.resolve(projectPath, file), tmpl)
 }
 
-const extendJSON = (filepath, content) => {
-  return fsp.readFile(filepath, "utf-8").then((data) => {
+const extendJSON = async (filepath, content) => {
+  await fsp.readFile(filepath, "utf-8").then(async (data) => {
     const originalContent = JSON.parse(data);
     const newContent = Object.assign({}, originalContent, content);
     const jsonStr = JSON.stringify(newContent, null, 2) + "\n";
-    fsp.writeFile(filepath, jsonStr);
+    await fsp.writeFile(filepath, jsonStr);
   });
 }
+
+const add = async (extPath, name, file, manifestArgs) => {
+  await fsp.mkdir(path.resolve(extPath, name));
+  await fsp.writeFile(path.resolve(extPath, `${name}/${file}`), '');
+  await extendJSON(path.resolve(extPath, 'manifest.json'), manifestArgs);
+};
 
 const cli = () => {
   return inquirer.prompt(QUESTIONS).then(async ({
@@ -91,12 +97,17 @@ const cli = () => {
     );
 
     if (popup) {
-      await fsp.mkdir(path.resolve(extPath, 'popup'));
-      await fsp.writeFile(path.resolve(extPath, 'popup/index.html'), '');
-      extendJSON(path.resolve(extPath, 'manifest.json'), {
+      await add(extPath, 'popup', 'index.html', {
         browser_action: {
           browser_style: true,
           default_popup: 'popup/index.html'
+        }
+      });
+    }
+    if (background) {
+      await add(extPath, 'background', 'index.js', {
+        background: {
+          scripts: 'background/index.js'
         }
       });
     }
