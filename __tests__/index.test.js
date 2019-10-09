@@ -95,15 +95,15 @@ describe('main', () => {
     assert.file(`${this.extPath}/content_scripts/index.js`);
   });
 
-  // it('can set match pattern for content script', done => {
-  //   run({
-  //     contentScript: true,
-  //     contentScriptMatch: '*://*.mozilla.org/*'
-  //   }, () => {
-  //     assert.fileContent('extension/manifest.json', 'content_scripts');
-  //     assert.fileContent('extension/manifest.json', '*://*.mozilla.org/*');
-  //     assert.file('extension/content_scripts/index.js');
-  //     done();
-  //   });
-  // });
+  it('can set match pattern for content script', async () => {
+    const args = {
+      contentScript: true,
+      contentScriptMatch: '*://*.mozilla.org/*'
+    };
+    Object.assign(this.promptAnswers, args);
+    await cli();
+    assert.fileContent(`${this.extPath}/manifest.json`, 'content_scripts');
+    assert.fileContent(`${this.extPath}/manifest.json`, '*://*.mozilla.org/*');
+    assert.file(`${this.extPath}/content_scripts/index.js`);
+  });
 });
