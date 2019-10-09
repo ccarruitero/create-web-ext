@@ -65,6 +65,7 @@ const cli = () => {
     permissions
   }) => {
     const projectPath = path.resolve(process.cwd(), name);
+    await fsp.rmdir(projectPath, { recursive: true });
     await fsp.mkdir(projectPath);
     await copyTpl('package.json', projectPath, { name })
 

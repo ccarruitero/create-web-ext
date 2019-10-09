@@ -1,5 +1,6 @@
 const path = require('path');
 const fs = require('fs');
+const fsp = fs.promises;
 const inquirer = require('inquirer');
 const cli = require('../index');
 
@@ -22,16 +23,29 @@ describe('main', () => {
       contentScript: false,
     };
     inquirer.prompt.mockResolvedValue(this.promptAnswers);
+
+    this.basicFiles = [
+      'package.json',
+      'extension/manifest.json',
+      'extension/_locales/en/messages.json'
+    ];
+  });
+
+  afterEach(async () => {
+    await fsp.rmdir(this.promptAnswers.name, { recursive: true });
   });
 
   it('creates files', async () => {
     await cli();
 
-    await assertFiles([
-      'package.json',
-      'extension/manifest.json',
-      'extension/_locales/en/messages.json'
-    ], this.promptAnswers.name);
+    await assertFiles(this.basicFiles, this.promptAnswers.name);
+  });
+
+  it('override existing folder', async () => {
+    await fsp.mkdir(this.promptAnswers.name);
+    await cli();
+
+    await assertFiles(this.basicFiles, this.promptAnswers.name);
   });
 
   // it('set name in locales', done => {
