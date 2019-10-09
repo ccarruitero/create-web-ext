@@ -3,16 +3,9 @@ const fs = require('fs');
 const fsp = fs.promises;
 const inquirer = require('inquirer');
 const cli = require('../index');
+const assert = require('yeoman-assert');
 
 jest.mock('inquirer');
-
-const assertFiles = async (files, dirName) => {
-  return files.forEach((file) => {
-    const filePath = path.resolve(dirName, file);
-    const fileExists = fs.existsSync(filePath);
-    expect(fileExists).toBeTruthy();
-  });
-};
 
 describe('main', () => {
   beforeEach(() => {
@@ -38,24 +31,26 @@ describe('main', () => {
   it('creates files', async () => {
     await cli();
 
-    await assertFiles(this.basicFiles, this.promptAnswers.name);
+    const files = this.basicFiles.map(file => `${this.promptAnswers.name}/${file}`);
+    assert.file(files);
   });
 
   it('override existing folder', async () => {
     await fsp.mkdir(this.promptAnswers.name);
     await cli();
 
-    await assertFiles(this.basicFiles, this.promptAnswers.name);
+    const files = this.basicFiles.map(file => `${this.promptAnswers.name}/${file}`);
+    assert.file(files);
   });
 
-  // it('set name in locales', done => {
-  //   run({
-  //     name: 'noPopup'
-  //   }, () => {
-  //     assert.fileContent('extension/_locales/en/messages.json', 'noPopup');
-  //     done();
-  //   });
-  // });
+  it('set name in locales', async () => {
+    const args = { name: 'noPopup' };
+    this.promptAnswers =  Object.assign(this.promptAnswers, args);
+
+    await cli()
+    const msgPath = path.resolve(this.promptAnswers.name, 'extension/_locales/en/messages.json');
+    assert.fileContent(msgPath, 'noPopup');
+  });
 
   // it('allow no popup', done => {
   //   run({
