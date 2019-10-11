@@ -123,6 +123,11 @@ const cli = () => {
         ]
       });
     }
+    if (permissions && (permissions.length > 0)) {
+      await extendJSON(path.resolve(extPath, 'manifest.json'), {
+        permissions: permissions
+      });
+    }
   });
 };
 

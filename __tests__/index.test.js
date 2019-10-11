@@ -72,18 +72,18 @@ describe('main', () => {
     assert.fileContent(`${this.extPath}/manifest.json`, 'background');
   });
 
-  // it('can set permissions in manifest', done => {
-  //   run({
-  //     permissions: ['alarms', 'activeTab']
-  //   }, () => {
-  //     assert.fileContent([
-  //         ['extension/manifest.json', 'permissions'],
-  //         ['extension/manifest.json', 'alarms'],
-  //         ['extension/manifest.json', 'activeTab']
-  //     ]);
-  //     done();
-  //   });
-  // });
+  it('can set permissions in manifest', async () => {
+    const args = { permissions: ['alarms', 'activeTab'] };
+    Object.assign(this.promptAnswers, args);
+    const manifest = `${this.extPath}/manifest.json`;
+
+    await cli();
+    assert.fileContent([
+      [manifest, 'permissions'],
+      [manifest, 'alarms'],
+      [manifest, 'activeTab']
+    ]);
+  });
 
   it('can set content script', async () => {
     const args = { contentScript: true };
