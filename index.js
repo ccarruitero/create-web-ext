@@ -49,7 +49,8 @@ const QUESTIONS = [{
 }];
 
 const copyTpl = async (file, projectPath, opts) => {
-  const content = await fsp.readFile(path.resolve('templates', file));
+  const filePath = path.resolve(__dirname, 'templates', file);
+  const content = await fsp.readFile(filePath);
   const tmpl = _.template(content)(opts);
   return fsp.writeFile(path.resolve(projectPath, file), tmpl)
 }
