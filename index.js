@@ -5,6 +5,7 @@ const fsp = require('fs').promises;
 const chalk = require('chalk');
 const inquirer = require('inquirer');
 const _ = require('lodash');
+const figlet = require('figlet');
 const { permissionChoices } = require('./manifestOptions');
 
 const QUESTIONS = [{
@@ -71,64 +72,74 @@ const add = async (extPath, name, file, manifestArgs) => {
 };
 
 const cli = () => {
-  return inquirer.prompt(QUESTIONS).then(async ({
-    name,
-    description,
-    popup,
-    contentScript,
-    contentScriptMatch,
-    input,
-    background,
-    permissions
-  }) => {
-    const projectPath = path.resolve(process.cwd(), name);
-    await fsp.rmdir(projectPath, { recursive: true });
-    await fsp.mkdir(projectPath);
-    await copyTpl('package.json', projectPath, { name })
+  return figlet('create-web-ext', 'Doom', (err, data) => {
+    console.log(data);
+    inquirer.prompt(QUESTIONS).then(async ({
+      name,
+      description,
+      popup,
+      contentScript,
+      contentScriptMatch,
+      input,
+      background,
+      permissions
+    }) => {
+      const projectPath = path.resolve(process.cwd(), name);
+      await fsp.rmdir(projectPath, { recursive: true });
+      await fsp.mkdir(projectPath);
+      await copyTpl('package.json', projectPath, { name })
 
-    const extPath = path.resolve(projectPath, 'extension');
-    await fsp.mkdir(extPath);
-    await copyTpl('manifest.json', extPath);
+      const extPath = path.resolve(projectPath, 'extension');
+      await fsp.mkdir(extPath);
+      await copyTpl('manifest.json', extPath);
 
-    const localesPath = path.resolve(extPath, '_locales/en');
-    await fsp.mkdir(localesPath, { recursive: true });
-    await copyTpl(
-      '_locales/en/messages.json',
-      extPath,
-      { name, description }
-    );
+      const localesPath = path.resolve(extPath, '_locales/en');
+      await fsp.mkdir(localesPath, { recursive: true });
+      await copyTpl(
+        '_locales/en/messages.json',
+        extPath,
+        { name, description }
+      );
 
-    if (popup) {
-      await add(extPath, 'popup', 'index.html', {
-        browser_action: {
-          browser_style: true,
-          default_popup: 'popup/index.html'
-        }
-      });
-    }
-    if (background) {
-      await add(extPath, 'background', 'index.js', {
-        background: {
-          scripts: 'background/index.js'
-        }
-      });
-    }
-    if (contentScript) {
-      const match = contentScriptMatch || '<all_urls>';
-      await add(extPath, 'content_scripts', 'index.js', {
-        content_scripts: [
-          {
-            matches: [match],
-            js: 'content_scripts/index.js'
+      if (popup) {
+        await add(extPath, 'popup', 'index.html', {
+          browser_action: {
+            browser_style: true,
+            default_popup: 'popup/index.html'
           }
-        ]
-      });
-    }
-    if (permissions && (permissions.length > 0)) {
-      await extendJSON(path.resolve(extPath, 'manifest.json'), {
-        permissions: permissions
-      });
-    }
+        });
+      }
+      if (background) {
+        await add(extPath, 'background', 'index.js', {
+          background: {
+            scripts: 'background/index.js'
+          }
+        });
+      }
+      if (contentScript) {
+        const match = contentScriptMatch || '<all_urls>';
+        await add(extPath, 'content_scripts', 'index.js', {
+          content_scripts: [
+            {
+              matches: [match],
+              js: 'content_scripts/index.js'
+            }
+          ]
+        });
+      }
+      if (permissions && (permissions.length > 0)) {
+        await extendJSON(path.resolve(extPath, 'manifest.json'), {
+          permissions: permissions
+        });
+      }
+
+      const postMsg = `
+        Congratulations! Your new WebExtension has been created at:
+        ${chalk.bold(chalk.green(projectPath))}
+      `;
+
+      console.log(postMsg);
+    });
   });
 };
 
