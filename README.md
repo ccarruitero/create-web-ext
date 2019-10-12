@@ -19,4 +19,4 @@ npx create-web-ext
 ### scripts
 We use [`web-ext`](https://github.com/mozilla/web-ext) for build, run and start
 scripts, so you can pass any `web-ext` accepted parameter to customize any
-script. Take a look to `web-ext` command reference](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference)
+script. Take a look to [`web-ext` command reference](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/web-ext_command_reference)
