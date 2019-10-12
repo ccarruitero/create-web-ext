@@ -21,7 +21,8 @@ describe('main', () => {
     this.basicFiles = [
       'package.json',
       'extension/manifest.json',
-      'extension/_locales/en/messages.json'
+      'extension/_locales/en/messages.json',
+      'extension/images/icon-64.png'
     ];
   });
 

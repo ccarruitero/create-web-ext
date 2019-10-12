@@ -71,6 +71,21 @@ const add = async (extPath, name, file, manifestArgs) => {
   await extendJSON(path.resolve(extPath, 'manifest.json'), manifestArgs);
 };
 
+const copyFolder = async (src, dest) => {
+  const srcPath = path.resolve(__dirname, 'templates', src);
+  await fsp.mkdir(dest);
+  await fsp.readdir(srcPath).then(dir => {
+    dir.forEach(async (element) => {
+      const stat = await fsp.lstat(path.resolve(srcPath, element));
+      if (stat.isFile()) {
+        await fsp.copyFile(path.resolve(srcPath, element), path.resolve(dest, element));
+      } else {
+        copyFolder(path.resolve(srcPath, element), path.resolve(dest, element));
+      }
+    });
+  })
+};
+
 const cli = () => {
   return figlet('create-web-ext', 'Doom', (err, data) => {
     console.log(data);
@@ -100,6 +115,8 @@ const cli = () => {
         extPath,
         { name, description }
       );
+
+      await copyFolder('images', `${extPath}/images`);
 
       if (popup) {
         await add(extPath, 'popup', 'index.html', {
