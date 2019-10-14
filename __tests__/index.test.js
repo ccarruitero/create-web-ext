@@ -22,7 +22,8 @@ describe('main', () => {
       'package.json',
       'extension/manifest.json',
       'extension/_locales/en/messages.json',
-      'extension/images/icon-64.png'
+      'extension/icons/icon-64.png',
+      'extension/icons/LICENSE'
     ];
   });
 

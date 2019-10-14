@@ -118,7 +118,7 @@ const cli = async () => {
       { name, description }
     );
 
-    await copyFolder('images', `${extPath}/images`);
+    await copyFolder('icons', `${extPath}/icons`);
 
     if (popup) {
       await add(extPath, 'popup', 'index.html', {
