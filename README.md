@@ -8,7 +8,7 @@ Command line utility to build cross-browser [Web Extensions](mdn link)
 
 ## Install
 ```
-npm i create-web-ext
+npm i @ccarruitero/create-web-ext
 ```
 
 ## Usage

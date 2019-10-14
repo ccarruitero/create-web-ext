@@ -1,5 +1,5 @@
 {
-  "name": "create-web-ext",
+  "name": "@ccarruitero/create-web-ext",
   "version": "0.1.0",
   "description": "command line tool to create cross-browser Web Extensions",
   "main": "index.js",
