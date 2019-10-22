@@ -23,6 +23,11 @@ const availablePermissions = [
   'webRequestBlocking'
 ];
 
+const availablePopupActions = [
+  'browser',
+  'page'
+];
+
 function getChoices(list) {
   return list.map(item => {
     return {
@@ -34,5 +39,6 @@ function getChoices(list) {
 }
 
 module.exports = {
-  permissionChoices: getChoices(availablePermissions)
+  permissionChoices: getChoices(availablePermissions),
+  popupActionChoices: availablePopupActions
 };

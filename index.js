@@ -7,7 +7,7 @@ const chalk = require('chalk');
 const inquirer = require('inquirer');
 const _ = require('lodash');
 const figlet = require('figlet');
-const { permissionChoices } = require('./manifestOptions');
+const { permissionChoices, popupActionChoices } = require('./manifestOptions');
 
 const QUESTIONS = [{
   name: 'name',
@@ -22,6 +22,16 @@ const QUESTIONS = [{
   message: 'Would you like to use a popup?',
   type: 'confirm',
   default: true,
+},
+{
+  name: 'popupAction',
+  message: 'What kind of action want to use with your popup?',
+  type: 'list',
+  choices: popupActionChoices,
+  default: popupActionChoices[0],
+  when: response => {
+    return response.popup;
+  },
 },
 {
   name: 'contentScript',
@@ -95,6 +105,7 @@ const cli = async () => {
     name,
     description,
     popup,
+    popupAction,
     contentScript,
     contentScriptMatch,
     input,
@@ -122,7 +133,7 @@ const cli = async () => {
 
     if (popup) {
       await add(extPath, 'popup', 'index.html', {
-        browser_action: {
+        [`${popupAction}_action`]: {
           browser_style: true,
           default_popup: 'popup/index.html'
         }

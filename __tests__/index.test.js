@@ -64,6 +64,16 @@ describe('main', () => {
     assert.noFileContent(`${this.extPath}/manifest.json`, 'default_popup');
   });
 
+  it('allow page_action for popup', async () => {
+    const args = { popupAction: 'page' }
+    Object.assign(this.promptAnswers, args);
+
+    await cli()
+    assert.file(`${this.extPath}/popup/index.html`);
+    assert.fileContent(`${this.extPath}/manifest.json`, 'default_popup');
+    assert.fileContent(`${this.extPath}/manifest.json`, 'page_action');
+  });
+
   it('can set background', async () => {
     const args = { background: true };
     Object.assign(this.promptAnswers, args);
