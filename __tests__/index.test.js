@@ -118,4 +118,19 @@ describe('main', () => {
     assert.fileContent(`${this.extPath}/manifest.json`, '*://*.mozilla.org/*');
     assert.file(`${this.extPath}/content_scripts/index.js`);
   });
+
+  it('allow devtools', async () => {
+    const args = {
+      devtools: true
+    };
+    Object.assign(this.promptAnswers, args);
+    await cli();
+    assert.fileContent(`${this.extPath}/manifest.json`, 'devtools_page');
+    assert.file([
+      `${this.extPath}/devtools/page.html`,
+      `${this.extPath}/devtools/devtools.js`,
+      `${this.extPath}/devtools/panel/panel.html`
+    ]);
+    assert.fileContent(`${this.extPath}/devtools/devtools.js`, this.promptAnswers.name);
+  });
 });

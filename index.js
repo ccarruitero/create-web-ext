@@ -54,6 +54,12 @@ const QUESTIONS = [{
   default: false,
 },
 {
+  name: 'devtools',
+  message: 'Would you like to use a devtool page?',
+  type: 'confirm',
+  default: false,
+},
+{
   type: 'checkbox',
   name: 'permissions',
   message: 'Would you like to set permissions?',
@@ -110,6 +116,7 @@ const cli = async () => {
     contentScriptMatch,
     input,
     background,
+    devtools,
     permissions
   }) => {
     const projectPath = path.resolve(process.cwd(), name);
@@ -156,6 +163,13 @@ const cli = async () => {
           }
         ]
       });
+    }
+    if (devtools) {
+      await copyFolder('devtools', `${extPath}/devtools`);
+      await add(extPath, 'devtools/panel', 'panel.html', {
+        devtools_page: 'devtools/page.html'
+      });
+      await copyTpl('devtools/devtools.js', extPath, { name })
     }
     if (permissions && (permissions.length > 0)) {
       await extendJSON(path.resolve(extPath, 'manifest.json'), {
