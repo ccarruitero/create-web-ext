@@ -149,7 +149,7 @@ const cli = async () => {
     if (background) {
       await add(extPath, 'background', 'index.js', {
         background: {
-          scripts: 'background/index.js'
+          scripts: ['background/index.js']
         }
       });
     }
@@ -159,7 +159,7 @@ const cli = async () => {
         content_scripts: [
           {
             matches: [match],
-            js: 'content_scripts/index.js'
+            js: ['content_scripts/index.js']
           }
         ]
       });
