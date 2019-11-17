@@ -89,6 +89,12 @@ const questions = [{
   default: false,
 },
 {
+  name: 'options',
+  message: 'Would you like to use an options page?',
+  type: 'confirm',
+  default: false
+},
+{
   type: 'checkbox',
   name: 'permissions',
   message: 'Would you like to set permissions?',

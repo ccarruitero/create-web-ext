@@ -1,7 +1,8 @@
 'use strict';
 
 const path = require('path');
-const fsp = require('fs').promises;
+const fs = require('fs');
+const fsp = fs.promises;
 const { promisify } = require('util');
 const chalk = require('chalk');
 const inquirer = require('inquirer');
@@ -26,14 +27,19 @@ const extendJSON = async (filepath, content) => {
 }
 
 const add = async (extPath, name, file, manifestArgs) => {
-  await fsp.mkdir(path.resolve(extPath, name));
+  const src = path.resolve(extPath, name);
+  if (!fs.existsSync(src)) {
+    await fsp.mkdir(src);
+  }
   await fsp.writeFile(path.resolve(extPath, `${name}/${file}`), '');
   await extendJSON(path.resolve(extPath, 'manifest.json'), manifestArgs);
 };
 
 const copyFolder = async (src, dest) => {
   const srcPath = path.resolve(__dirname, 'templates', src);
-  await fsp.mkdir(dest);
+  if (!fs.existsSync(dest)) {
+    await fsp.mkdir(dest);
+  }
   await fsp.readdir(srcPath).then(dir => {
     dir.forEach(async (element) => {
       const stat = await fsp.lstat(path.resolve(srcPath, element));
@@ -60,6 +66,7 @@ const cli = async () => {
     input,
     background,
     devtools,
+    options,
     permissions
   }) => {
     const projectPath = path.resolve(process.cwd(), name);
@@ -113,6 +120,16 @@ const cli = async () => {
         devtools_page: 'devtools/page.html'
       });
       await copyTpl('devtools/devtools.js', extPath, { name })
+    }
+    if (options) {
+      await copyFolder('options', `${extPath}/options`);
+      await add(extPath, 'options', 'index.js', {
+        options_ui: {
+          page: 'options/page.html',
+          browser_style: true,
+          chrome_style: true
+        }
+      });
     }
     if (permissions && (permissions.length > 0)) {
       await extendJSON(path.resolve(extPath, 'manifest.json'), {

@@ -107,6 +107,17 @@ describe('main', () => {
     assert.file(`${this.extPath}/content_scripts/index.js`);
   });
 
+  it('allow use an options page', async () => {
+    const args = {
+      options: true
+    };
+    Object.assign(this.promptAnswers, args);
+    await cli();
+    assert.fileContent(`${this.extPath}/manifest.json`, 'options_ui');
+    assert.file(`${this.extPath}/options/index.js`);
+    assert.file(`${this.extPath}/options/page.html`);
+  });
+
   it('can set match pattern for content script', async () => {
     const args = {
       contentScript: true,
