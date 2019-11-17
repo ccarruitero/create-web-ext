@@ -23,9 +23,10 @@ const availablePermissions = [
   'webRequestBlocking'
 ];
 
-const popupActionChoices = [
+const actionChoices = [
   'browser',
-  'page'
+  'page',
+  'sidebar'
 ];
 
 function getChoices(list) {
@@ -47,19 +48,19 @@ const questions = [{
   message: 'Give a description for your web extension',
 },
 {
-  name: 'popup',
-  message: 'Would you like to use a popup?',
+  name: 'action',
+  message: 'Would you like to use an action?',
   type: 'confirm',
   default: true,
 },
 {
-  name: 'popupAction',
-  message: 'What kind of action want to use with your popup?',
+  name: 'actionType',
+  message: 'What kind of action would you like to use?',
   type: 'list',
-  choices: popupActionChoices,
-  default: popupActionChoices[0],
+  choices: actionChoices,
+  default: actionChoices[0],
   when: response => {
-    return response.popup;
+    return response.action;
   },
 },
 {

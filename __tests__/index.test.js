@@ -12,7 +12,8 @@ describe('main', () => {
     this.promptAnswers = {
       name: 'myExtension',
       description: 'some description',
-      popup: true,
+      action: true,
+      actionType: 'popup',
       contentScript: false,
     };
     inquirer.prompt.mockResolvedValue(this.promptAnswers);
@@ -55,8 +56,8 @@ describe('main', () => {
     assert.fileContent(msgPath, 'noPopup');
   });
 
-  it('allow no popup', async () => {
-    const args = { popup: false };
+  it('allow no action', async () => {
+    const args = { action: false };
     Object.assign(this.promptAnswers, args);
 
     await cli()
@@ -64,12 +65,12 @@ describe('main', () => {
     assert.noFileContent(`${this.extPath}/manifest.json`, 'default_popup');
   });
 
-  it('allow page_action for popup', async () => {
-    const args = { popupAction: 'page' }
+  it('allow page_action', async () => {
+    const args = { actionType: 'page' }
     Object.assign(this.promptAnswers, args);
 
     await cli()
-    assert.file(`${this.extPath}/popup/index.html`);
+    assert.file(`${this.extPath}/page/index.html`);
     assert.fileContent(`${this.extPath}/manifest.json`, 'default_popup');
     assert.fileContent(`${this.extPath}/manifest.json`, 'page_action');
   });

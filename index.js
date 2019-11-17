@@ -52,6 +52,18 @@ const copyFolder = async (src, dest) => {
   })
 };
 
+const getActionManifest = (actionType) => {
+  switch(actionType) {
+    default:
+      return {
+        [`${actionType}_action`]: {
+          browser_style: true,
+          default_popup: `${actionType}/index.html`
+        }
+      };
+  }
+};
+
 const cli = async () => {
   const asyncFiglet = promisify(figlet);
   const header = await asyncFiglet('create-web-ext', 'Doom');
@@ -59,8 +71,8 @@ const cli = async () => {
   return inquirer.prompt(questions).then(async ({
     name,
     description,
-    popup,
-    popupAction,
+    action,
+    actionType,
     contentScript,
     contentScriptMatch,
     input,
@@ -88,13 +100,8 @@ const cli = async () => {
 
     await copyFolder('icons', `${extPath}/icons`);
 
-    if (popup) {
-      await add(extPath, 'popup', 'index.html', {
-        [`${popupAction}_action`]: {
-          browser_style: true,
-          default_popup: 'popup/index.html'
-        }
-      });
+    if (action && actionType) {
+      await add(extPath, actionType, 'index.html', getActionManifest(actionType));
     }
     if (background) {
       await add(extPath, 'background', 'index.js', {
