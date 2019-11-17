@@ -75,6 +75,18 @@ describe('main', () => {
     assert.fileContent(`${this.extPath}/manifest.json`, 'page_action');
   });
 
+  it('allow sidebar_action', async () => {
+    const args = { actionType: 'sidebar' }
+    Object.assign(this.promptAnswers, args);
+
+    await cli()
+    assert.file(`${this.extPath}/sidebar/index.html`);
+    assert.fileContent(`${this.extPath}/manifest.json`, 'default_panel');
+    assert.fileContent(`${this.extPath}/manifest.json`, 'default_title');
+    assert.fileContent(`${this.extPath}/manifest.json`, 'default_icon');
+    assert.fileContent(`${this.extPath}/manifest.json`, 'sidebar_action');
+  });
+
   it('can set background', async () => {
     const args = { background: true };
     Object.assign(this.promptAnswers, args);

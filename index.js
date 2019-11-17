@@ -52,15 +52,23 @@ const copyFolder = async (src, dest) => {
   })
 };
 
-const getActionManifest = (actionType) => {
+const composeAction = (actionType, actionContent) => ({
+  [`${actionType}_action`]: actionContent
+});
+
+const getActionManifest = (actionType, name) => {
   switch(actionType) {
+    case 'sidebar':
+      return composeAction(actionType, {
+        default_panel: `${actionType}/index.html`,
+        default_title: name,
+        default_icon: 'icons/icon-64.png'
+      });
     default:
-      return {
-        [`${actionType}_action`]: {
-          browser_style: true,
-          default_popup: `${actionType}/index.html`
-        }
-      };
+      return composeAction(actionType, {
+        browser_style: true,
+        default_popup: `${actionType}/index.html`
+      });
   }
 };
 
@@ -101,7 +109,7 @@ const cli = async () => {
     await copyFolder('icons', `${extPath}/icons`);
 
     if (action && actionType) {
-      await add(extPath, actionType, 'index.html', getActionManifest(actionType));
+      await add(extPath, actionType, 'index.html', getActionManifest(actionType, name));
     }
     if (background) {
       await add(extPath, 'background', 'index.js', {
