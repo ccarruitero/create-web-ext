@@ -72,93 +72,97 @@ const getActionManifest = (actionType, name) => {
   }
 };
 
+const buildExt = async ({
+  name,
+  description,
+  action,
+  actionType,
+  contentScript,
+  contentScriptMatch,
+  input,
+  background,
+  devtools,
+  options,
+  permissions
+}) => {
+  const projectPath = path.resolve(process.cwd(), name);
+  await fsp.rmdir(projectPath, { recursive: true });
+  await fsp.mkdir(projectPath);
+  await copyTpl('package.json', projectPath, { name })
+
+  const extPath = path.resolve(projectPath, 'extension');
+  await fsp.mkdir(extPath);
+  await copyTpl('manifest.json', extPath);
+
+  const localesPath = path.resolve(extPath, '_locales/en');
+  await fsp.mkdir(localesPath, { recursive: true });
+  await copyTpl(
+    '_locales/en/messages.json',
+    extPath,
+    { name, description }
+  );
+
+  await copyFolder('icons', `${extPath}/icons`);
+
+  if (action && actionType) {
+    await add(extPath, actionType, 'index.html', getActionManifest(actionType, name));
+  }
+  if (background) {
+    await add(extPath, 'background', 'index.js', {
+      background: {
+        scripts: ['background/index.js']
+      }
+    });
+  }
+  if (contentScript) {
+    const match = contentScriptMatch || '<all_urls>';
+    await add(extPath, 'content_scripts', 'index.js', {
+      content_scripts: [
+        {
+          matches: [match],
+          js: ['content_scripts/index.js']
+        }
+      ]
+    });
+  }
+  if (devtools) {
+    await copyFolder('devtools', `${extPath}/devtools`);
+    await add(extPath, 'devtools/panel', 'panel.html', {
+      devtools_page: 'devtools/page.html'
+    });
+    await copyTpl('devtools/devtools.js', extPath, { name })
+  }
+  if (options) {
+    await copyFolder('options', `${extPath}/options`);
+    await add(extPath, 'options', 'index.js', {
+      options_ui: {
+        page: 'options/page.html',
+        browser_style: true,
+        chrome_style: true
+      }
+    });
+  }
+  if (permissions && (permissions.length > 0)) {
+    await extendJSON(path.resolve(extPath, 'manifest.json'), {
+      permissions: permissions
+    });
+  }
+
+  const postMsg = `
+    Congratulations! Your new WebExtension has been created at:
+    ${chalk.bold(chalk.green(projectPath))}
+  `;
+
+  console.log(postMsg);
+};
+
 const cli = async () => {
   const asyncFiglet = promisify(figlet);
   const header = await asyncFiglet('create-web-ext', 'Doom');
   console.log(header);
-  return inquirer.prompt(questions).then(async ({
-    name,
-    description,
-    action,
-    actionType,
-    contentScript,
-    contentScriptMatch,
-    input,
-    background,
-    devtools,
-    options,
-    permissions
-  }) => {
-    const projectPath = path.resolve(process.cwd(), name);
-    await fsp.rmdir(projectPath, { recursive: true });
-    await fsp.mkdir(projectPath);
-    await copyTpl('package.json', projectPath, { name })
-
-    const extPath = path.resolve(projectPath, 'extension');
-    await fsp.mkdir(extPath);
-    await copyTpl('manifest.json', extPath);
-
-    const localesPath = path.resolve(extPath, '_locales/en');
-    await fsp.mkdir(localesPath, { recursive: true });
-    await copyTpl(
-      '_locales/en/messages.json',
-      extPath,
-      { name, description }
-    );
-
-    await copyFolder('icons', `${extPath}/icons`);
-
-    if (action && actionType) {
-      await add(extPath, actionType, 'index.html', getActionManifest(actionType, name));
-    }
-    if (background) {
-      await add(extPath, 'background', 'index.js', {
-        background: {
-          scripts: ['background/index.js']
-        }
-      });
-    }
-    if (contentScript) {
-      const match = contentScriptMatch || '<all_urls>';
-      await add(extPath, 'content_scripts', 'index.js', {
-        content_scripts: [
-          {
-            matches: [match],
-            js: ['content_scripts/index.js']
-          }
-        ]
-      });
-    }
-    if (devtools) {
-      await copyFolder('devtools', `${extPath}/devtools`);
-      await add(extPath, 'devtools/panel', 'panel.html', {
-        devtools_page: 'devtools/page.html'
-      });
-      await copyTpl('devtools/devtools.js', extPath, { name })
-    }
-    if (options) {
-      await copyFolder('options', `${extPath}/options`);
-      await add(extPath, 'options', 'index.js', {
-        options_ui: {
-          page: 'options/page.html',
-          browser_style: true,
-          chrome_style: true
-        }
-      });
-    }
-    if (permissions && (permissions.length > 0)) {
-      await extendJSON(path.resolve(extPath, 'manifest.json'), {
-        permissions: permissions
-      });
-    }
-
-    const postMsg = `
-      Congratulations! Your new WebExtension has been created at:
-      ${chalk.bold(chalk.green(projectPath))}
-    `;
-
-    console.log(postMsg);
-  });
+  return inquirer.prompt(questions).then(answers => buildExt(answers));
 };
 
 module.exports = cli;
+module.exports.questions = questions;
+module.exports.buildExt = buildExt;
