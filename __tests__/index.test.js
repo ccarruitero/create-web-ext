@@ -51,7 +51,7 @@ describe('main', () => {
     const args = { name: 'noPopup' };
     Object.assign(this.promptAnswers, args);
 
-    await cli()
+    await cli();
     const msgPath = path.resolve(this.promptAnswers.name, 'extension/_locales/en/messages.json');
     assert.fileContent(msgPath, 'noPopup');
   });
@@ -60,26 +60,26 @@ describe('main', () => {
     const args = { action: false };
     Object.assign(this.promptAnswers, args);
 
-    await cli()
+    await cli();
     assert.noFile(`${this.extPath}/popup/index.html`);
     assert.noFileContent(`${this.extPath}/manifest.json`, 'default_popup');
   });
 
   it('allow page_action', async () => {
-    const args = { actionType: 'page' }
+    const args = { actionType: 'page' };
     Object.assign(this.promptAnswers, args);
 
-    await cli()
+    await cli();
     assert.file(`${this.extPath}/page/index.html`);
     assert.fileContent(`${this.extPath}/manifest.json`, 'default_popup');
     assert.fileContent(`${this.extPath}/manifest.json`, 'page_action');
   });
 
   it('allow sidebar_action', async () => {
-    const args = { actionType: 'sidebar' }
+    const args = { actionType: 'sidebar' };
     Object.assign(this.promptAnswers, args);
 
-    await cli()
+    await cli();
     assert.file(`${this.extPath}/sidebar/index.html`);
     assert.fileContent(`${this.extPath}/manifest.json`, 'default_panel');
     assert.fileContent(`${this.extPath}/manifest.json`, 'default_title');

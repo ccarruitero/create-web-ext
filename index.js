@@ -14,8 +14,8 @@ const copyTpl = async (file, projectPath, opts) => {
   const filePath = path.resolve(__dirname, 'templates', file);
   const content = await fsp.readFile(filePath);
   const tmpl = _.template(content)(opts);
-  return fsp.writeFile(path.resolve(projectPath, file), tmpl)
-}
+  return fsp.writeFile(path.resolve(projectPath, file), tmpl);
+};
 
 const extendJSON = async (filepath, content) => {
   await fsp.readFile(filepath, 'utf-8').then(async (data) => {
@@ -24,7 +24,7 @@ const extendJSON = async (filepath, content) => {
     const jsonStr = JSON.stringify(newContent, null, 2) + '\n';
     await fsp.writeFile(filepath, jsonStr);
   });
-}
+};
 
 const add = async (extPath, name, file, manifestArgs) => {
   const src = path.resolve(extPath, name);
@@ -49,7 +49,7 @@ const copyFolder = async (src, dest) => {
         copyFolder(path.resolve(srcPath, element), path.resolve(dest, element));
       }
     });
-  })
+  });
 };
 
 const composeAction = (actionType, actionContent) => ({
@@ -58,17 +58,17 @@ const composeAction = (actionType, actionContent) => ({
 
 const getActionManifest = (actionType, name) => {
   switch(actionType) {
-    case 'sidebar':
-      return composeAction(actionType, {
-        default_panel: `${actionType}/index.html`,
-        default_title: name,
-        default_icon: 'icons/icon-64.png'
-      });
-    default:
-      return composeAction(actionType, {
-        browser_style: true,
-        default_popup: `${actionType}/index.html`
-      });
+  case 'sidebar':
+    return composeAction(actionType, {
+      default_panel: `${actionType}/index.html`,
+      default_title: name,
+      default_icon: 'icons/icon-64.png'
+    });
+  default:
+    return composeAction(actionType, {
+      browser_style: true,
+      default_popup: `${actionType}/index.html`
+    });
   }
 };
 
@@ -79,7 +79,6 @@ const buildExt = async ({
   actionType,
   contentScript,
   contentScriptMatch,
-  input,
   background,
   devtools,
   options,
@@ -88,7 +87,7 @@ const buildExt = async ({
   const projectPath = path.resolve(process.cwd(), name);
   await fsp.rmdir(projectPath, { recursive: true });
   await fsp.mkdir(projectPath);
-  await copyTpl('package.json', projectPath, { name })
+  await copyTpl('package.json', projectPath, { name });
 
   const extPath = path.resolve(projectPath, 'extension');
   await fsp.mkdir(extPath);
@@ -130,7 +129,7 @@ const buildExt = async ({
     await add(extPath, 'devtools/panel', 'panel.html', {
       devtools_page: 'devtools/page.html'
     });
-    await copyTpl('devtools/devtools.js', extPath, { name })
+    await copyTpl('devtools/devtools.js', extPath, { name });
   }
   if (options) {
     await copyFolder('options', `${extPath}/options`);
