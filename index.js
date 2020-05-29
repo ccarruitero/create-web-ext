@@ -88,6 +88,7 @@ const buildExt = async ({
   await fsp.rmdir(projectPath, { recursive: true });
   await fsp.mkdir(projectPath);
   await copyTpl('package.json', projectPath, { name });
+  await copyTpl('README.md', projectPath, { name, description });
 
   const extPath = path.resolve(projectPath, 'extension');
   await fsp.mkdir(extPath);

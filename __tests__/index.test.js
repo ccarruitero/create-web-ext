@@ -20,6 +20,7 @@ describe('main', () => {
     this.extPath = `${this.promptAnswers.name}/extension`;
 
     this.basicFiles = [
+      'README.md',
       'package.json',
       'extension/manifest.json',
       'extension/_locales/en/messages.json',
