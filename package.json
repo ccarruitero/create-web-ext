@@ -1,6 +1,6 @@
 {
   "name": "@ccarruitero/create-web-ext",
-  "version": "0.4.0",
+  "version": "0.4.1",
   "description": "command line tool to create cross-browser Web Extensions",
   "repository": {
     "url": "https://github.com/ccarruitero/create-web-ext"
