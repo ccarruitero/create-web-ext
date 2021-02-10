@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "dependencies": {},
   "devDependencies": {
-    "web-ext": "^4.1.0"
+    "web-ext": "^5.5.0"
   },
   "scripts": {
     "build": "web-ext build -s extension/",
