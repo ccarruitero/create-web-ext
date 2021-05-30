@@ -85,7 +85,7 @@ const buildExt = async ({
   permissions
 }) => {
   const projectPath = path.resolve(process.cwd(), name);
-  await fsp.rmdir(projectPath, { recursive: true });
+  await fsp.rm(projectPath, { recursive: true, force: true });
   await fsp.mkdir(projectPath);
   await copyTpl('package.json', projectPath, { name });
   await copyTpl('README.md', projectPath, { name, description });
