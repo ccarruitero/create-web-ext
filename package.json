@@ -24,7 +24,7 @@
   "author": "César Carruitero",
   "license": "MIT",
   "dependencies": {
-    "chalk": "^4.0.0",
+    "chalk": "^5.1.0",
     "figlet": "^1.2.4",
     "inquirer": "^8.1.0",
     "lodash": "^4.17.15"
