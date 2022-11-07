@@ -1,6 +1,6 @@
 # create-web-ext
 
-[![Build Status](https://travis-ci.org/ccarruitero/create-web-ext.svg?branch=master)](https://travis-ci.org/ccarruitero/create-web-ext)
+[![Build Status](https://github.com/ccarruitero/create-web-ext/actions/workflows/master.yml/badge.svg?branch=master)](https://github.com/ccarruitero/create-web-ext/actions?query=branch:master)
 [![Coverage Status](https://coveralls.io/repos/github/ccarruitero/create-web-ext/badge.svg?branch=master)](https://coveralls.io/github/ccarruitero/create-web-ext?branch=master)
 [![Dependency Status](https://david-dm.org/ccarruitero/create-web-ext.svg)](https://david-dm.org/ccarruitero/create-web-ext)
 
